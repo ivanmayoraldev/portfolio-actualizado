@@ -21,21 +21,16 @@ import TitleSection from "@/components/TitleSection.astro";
     </SectionContainer>
   </main>
   
-  <div class="space-y-24">
+  <div class="space-y-24 px-4 sm:px-6">
     <SectionContainer id="proyectos">
-      <TitleSection>
-        <CodeIcon class="size-7" />
-        Proyectos
-      </TitleSection>
       <Projects />
     </SectionContainer>
     
-    
     <SectionContainer id="experiencia">
-      <TitleSection>
-        <ProfileCheck class="size-8" />
-        Mi Camino como Backend Developer
-      </TitleSection>
+      <h2 class="flex items-center gap-x-3 text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-6">
+        <ProfileCheck class="size-8 sm:size-10" />
+        Mi Camino
+      </h2>
       <Experience />
     </SectionContainer>
   </div>

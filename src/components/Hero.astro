@@ -7,41 +7,40 @@ import SocialPill from "@/components/SocialPill.astro"
 import TechStack from "@/components/TechStack.astro"
 ---
 
-<div class="max-w-4xl mx-auto" id="inicio">
+<div class="max-w-4xl mx-auto px-4 sm:px-6" id="inicio">
   <div class="relative mb-6 w-full flex justify-center">
     <div class="absolute inset-0 bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 dark:from-yellow-400 dark:via-orange-400 dark:to-red-500 rounded-full blur-3xl opacity-40 animate-pulse scale-110"></div>
     <img
-      class="relative rounded-full shadow-2xl size-32 sm:size-40 md:size-44 ring-4 ring-white dark:ring-gray-800 transition-all duration-500 hover:scale-105 hover:ring-8"
+      class="relative rounded-full shadow-2xl size-28 sm:size-40 md:size-44 ring-4 ring-white dark:ring-gray-800 transition-all duration-500 hover:scale-105 hover:ring-8"
       src="/logo.jpg"
       alt={personalImageAlt}
     />
   </div>
 
-  <h1 class="text-center text-5xl sm:text-6xl font-bold tracking-tight text-gray-800 dark:text-white leading-tight mb-3">
+  <h1 class="text-center text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-gray-800 dark:text-white leading-tight mb-3 px-2">
     Iván Mayoral Capel
   </h1>
 
-  <p class="text-center text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 mb-6">
+  <p class="text-center text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 mb-6 px-2">
     Desarrollador Backend Junior
   </p>
 
-
-  <div class="mb-10 max-w-3xl mx-auto space-y-4">
-    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+  <div class="mb-10 max-w-3xl mx-auto space-y-4 px-2">
+    <p class="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
       <strong class="text-gray-800 dark:text-gray-200">22 años, Madrid.</strong> Graduado en <strong class="text-gray-700 dark:text-gray-300">DAW</strong>, cursando actualmente <strong class="text-gray-700 dark:text-gray-300">DAM</strong>. En 2026 comenzaré <strong class="text-gray-700 dark:text-gray-300">Ingeniería Informática</strong> especializado en Ingeniería de Software.
     </p>
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+    <p class="text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
       <strong class="text-yellow-600 dark:text-yellow-400">Desarrollador Backend especializado en Python, FastAPI y PostgreSQL.</strong> Actualmente desarrollando módulos custom para <strong class="text-yellow-600 dark:text-yellow-400">Odoo ERP</strong>, gestionando migraciones complejas entre versiones (v15-v18) y creación de scripts para las migraciones complejas.
     </p>
   </div>
 
-  <div class="mb-12">
+  <div class="mb-12 px-2">
     <TechStack />
   </div>
 
-  <div class="max-w-3xl mx-auto">
-    <div class="flex flex-wrap justify-center items-center gap-4">
-      <div class="relative px-4 py-2 bg-green-500 dark:bg-green-600 text-white font-bold text-sm rounded-full shadow-lg flex items-center gap-2 ring-2 ring-green-300 dark:ring-green-400">
+  <div class="max-w-3xl mx-auto px-2">
+    <div class="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-5 sm:gap-4">
+      <div class="w-full sm:w-auto relative px-4 py-2 bg-green-500 dark:bg-green-600 text-white font-bold text-xs sm:text-sm rounded-full shadow-lg flex items-center justify-center gap-2 ring-2 ring-green-300 dark:ring-green-400">
         <span class="relative flex h-2 w-2">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
@@ -49,19 +48,15 @@ import TechStack from "@/components/TechStack.astro"
         Disponible para trabajar
       </div>
       <a
-      href="/cv.pdf"
-      download="Ivan_Mayoral_Capel_CV.pdf"
-      class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-full transition-all duration-300 hover:scale-105 shadow-lg font-bold text-sm ring-2 ring-blue-300 dark:ring-blue-400"
-    >
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-      </svg>
-      Descargar CV
-    </a>
-    </div>
-
-    <div>
-      
+        href="/cv.pdf"
+        download="Ivan_Mayoral_Capel_CV.pdf"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-full transition-all duration-300 hover:scale-105 shadow-lg font-bold text-xs sm:text-sm ring-2 ring-blue-300 dark:ring-blue-400"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Descargar CV
+      </a>
     </div>
   </div>
 </div>

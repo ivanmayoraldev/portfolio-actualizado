@@ -1,4 +1,5 @@
 ---
+import Briefcase from "./icons/Briefcase.astro";
 import LinkInline from "./LinkInline.astro";
 
 interface Props {
@@ -16,17 +17,15 @@ const { title, company, description, link, date, tecnologias, tag } =
 ---
 
 <div
-  class="relative mx-12 pb-12 grid before:absolute before:left-[-35px] before:block before:h-full before:border-l-2 before:border-black/20 dark:before:border-white/15 before:content-[''] md:grid-cols-5 md:gap-10 md:space-x-4]"
+  class="relative pb-12 grid before:absolute before:left-[-35px] md:before:left-[-42px] before:block before:h-full before:border-l-2 before:border-black/20 dark:before:border-white/15 before:content-[''] md:grid-cols-5 md:gap-8 lg:gap-10"
 >
-  
-  <div class="relative md:col-span-4">
-    
-    <div class="sticky top-0">
-      <span class="text-yellow-400 -left-[42px] absolute rounded-full text-5xl"
+  <div class="relative md:col-span-2 lg:col-span-2">
+    <div class="md:sticky md:top-24">
+      <span class="text-yellow-400 -left-[42px] md:-left-[50px] absolute rounded-full text-4xl md:text-5xl"
         >&bull;</span
       >
       <h3
-        class={`text-2xl font-bold ${
+        class={`text-xl sm:text-2xl font-bold ${
           tag === "Estudios"
             ? "text-yellow-500"
             : tag === "Trabajo"
@@ -37,22 +36,23 @@ const { title, company, description, link, date, tecnologias, tag } =
         {title}
       </h3>
 
-      <h4 class="font-semibold text-xl text-gray-600 dark:text-white mt-2 mb-2">
+      <h4 class="font-semibold text-lg sm:text-xl text-gray-600 dark:text-white mt-2 mb-2">
         {company}
       </h4>
-      <time class="text-sm text-gray-600/80 dark:text-white/80">{date}</time>
+      <time class="text-xs sm:text-sm text-gray-600/80 dark:text-white/80">{date}</time>
     </div>
   </div>
+  
   <div
-    class="relative flex flex-col gap-2 pb-4 text-gray-600 dark:text-gray-300 md:col-span-4"
+    class="relative flex flex-col gap-2 pb-4 mt-4 md:mt-0 text-sm sm:text-base text-gray-600 dark:text-gray-300 md:col-span-3 lg:col-span-3"
   >
-    {description}
+    <p class="leading-relaxed">{description}</p>
     {
       tecnologias && tecnologias.length > 0 && (
         <div class="mt-4">
           <ul class="flex flex-wrap gap-2">
             {tecnologias.map((tech) => (
-              <li class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-full text-sm">
+              <li class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                 {tech}
               </li>
             ))}
