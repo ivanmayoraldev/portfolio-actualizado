@@ -1,0 +1,42 @@
+---
+import ExperienceItem from "./ExperienceItem.astro";
+const EXPERIENCE = [
+  {
+    date: "Octubre 2025 - Actualmente...",
+    title: "Desarrollador Backend (Prácticas) ",
+    company: "Vortex Dimension Digital S.L",
+    tag: "Trabajo",
+    description:
+      "Uso de Python, PostreSQL, entorno Ubuntu para trabajar con Odoo. Migraciones entre versiones de Odoo (v.15 - v.18), creación de scripts dinámicos para agilizar migraciones y desarrollo de módulos custom para clientes finales.",
+    tecnologias: ["Python", "PostgreSQL", "Odoo", "Ubuntu", "Git"],
+  },
+  {
+    date: "Octubre 2025 - Actualmente...",
+    title: "Grado Superior en Desarrollo de Aplicaciones Multiplataforma ",
+    company: "Sinergia FP",
+    tag: "Estudios",
+    description:
+      "Acceso a Datos con C, PHP y Laravel. Programacion de servicios y procesos con Java. Desarrollo de interfaces con C# y .NET. Python · Hibernate · XML",
+    tecnologias: ["Python", "Java", "C#", ".NET", "PHP", "Laravel"],
+  },
+  {
+    date: "Septiembre 2023 - Junio 2025",
+    title: "Grado Superior en Desarrollo de Aplicaciones Web",
+    company: "CFP JUANXXIII",
+    tag: "Estudios",
+    description:
+      "Desarrollo de APIs con Node.JS, backend con PHP puro y Laravel. Frontend con JavaScript puro y ReactJS. Uso de Figma para diseño UI/UX. Firebase · Express · MySQL",
+    tecnologias: ["React", "Node.js", "PHP", "Laravel", "Firebase", "Figma"],
+  },
+];
+---
+
+<ol class="relative mt-16">
+  {
+    EXPERIENCE.map((experience) => (
+      <li class="">
+        <ExperienceItem {...experience} />
+      </li>
+    ))
+  }
+</ol>

@@ -1,0 +1,42 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+import Briefcase from "@/components/icons/Briefcase.astro";
+import CodeIcon from "@/components/icons/Code.astro";
+import Experience from "@/components/Experience.astro";
+import ProfileCheck from "@/components/icons/ProfileCheck.astro";
+import Projects from "@/components/Projects.astro";
+import SectionContainer from "@/components/SectionContainer.astro";
+import Hero from "@/components/Hero.astro";
+import TitleSection from "@/components/TitleSection.astro";
+---
+
+<Layout
+  title="Porfolio de Iván Mayoral Capel - Desarrollador Backend | Especializado en Python"
+  description="Explora el portafolio de Iván Mayoral Capel, un desarrollador backend especializado en Python. Descubre sus proyectos, experiencia y habilidades en desarrollo web y APIs."
+>
+  <main class="px-4">
+    <SectionContainer class="py-16 md:py-36">
+      <Hero />
+    </SectionContainer>
+  </main>
+  
+  <div class="space-y-24">
+    <SectionContainer id="proyectos">
+      <TitleSection>
+        <CodeIcon class="size-7" />
+        Proyectos
+      </TitleSection>
+      <Projects />
+    </SectionContainer>
+    
+    
+    <SectionContainer id="experiencia">
+      <TitleSection>
+        <ProfileCheck class="size-8" />
+        Mi Camino como Backend Developer
+      </TitleSection>
+      <Experience />
+    </SectionContainer>
+  </div>
+</Layout>
