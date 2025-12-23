@@ -9,29 +9,10 @@ import Projects from "@/components/Projects.astro";
 import SectionContainer from "@/components/SectionContainer.astro";
 import Hero from "@/components/Hero.astro";
 import TitleSection from "@/components/TitleSection.astro";
+import Career from '@/components/Career.astro';
 ---
 
-<Layout
-  title="Porfolio de Iván Mayoral Capel - Desarrollador Backend | Especializado en Python"
-  description="Explora el portafolio de Iván Mayoral Capel, un desarrollador backend especializado en Python. Descubre sus proyectos, experiencia y habilidades en desarrollo web y APIs."
->
-  <main class="px-4">
-    <SectionContainer class="py-16 md:py-36">
-      <Hero />
-    </SectionContainer>
-  </main>
-  
-  <div class="space-y-24 px-4 sm:px-6">
-    <SectionContainer id="proyectos">
-      <Projects />
-    </SectionContainer>
-    
-    <SectionContainer id="experiencia">
-      <h2 class="flex items-center gap-x-3 text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-6">
-        <ProfileCheck class="size-8 sm:size-10" />
-        Mi Camino
-      </h2>
-      <Experience />
-    </SectionContainer>
-  </div>
+<Layout title="Iván Mayoral - Backend Developer" description="Portfolio de Iván Mayoral">
+  <Hero />
+  <Career />
 </Layout>

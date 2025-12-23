@@ -1,0 +1,178 @@
+---
+const GITHUB_USERNAME = 'ivanmayoraldev';
+
+let userData: any = null;
+let repos: any[] = [];
+let events: any[] = [];
+let totalStars = 0;
+let totalForks = 0;
+let featuredRepos: any[] = [];
+let languages: string[] = [];
+
+// Funciones auxiliares
+function getLanguageColor(lang: string): string {
+  const colors: Record<string, string> = { JavaScript:'bg-yellow-400', Python:'bg-blue-400', HTML:'bg-orange-400', CSS:'bg-blue-200' };
+  return colors[lang] || 'bg-gray-400';
+}
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString();
+}
+
+function getEventIcon(type: string): string {
+  const icons: Record<string, string> = { PushEvent:'📦', PullRequestEvent:'🔀', IssuesEvent:'❗' };
+  return icons[type] || '⚡';
+}
+
+function getEventDescription(event: any): string {
+  switch(event.type){
+    case 'PushEvent': return `Push a ${event.repo.name}`;
+    case 'PullRequestEvent': return `Pull request en ${event.repo.name}`;
+    case 'IssuesEvent': return `Issue en ${event.repo.name}`;
+    default: return event.type;
+  }
+}
+
+// Fetch GitHub
+async function fetchGitHubData() {
+  console.log('Descargando datos de GitHub...');
+  try {
+    const [userRes, reposRes, eventsRes] = await Promise.all([
+      fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, { headers: { 'User-Agent': 'Portfolio-App' } }),
+      fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=50`, { headers: { 'User-Agent': 'Portfolio-App' } }),
+      fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=10`, { headers: { 'User-Agent': 'Portfolio-App' } }),
+    ]);
+
+    if(userRes.ok) userData = await userRes.json();
+    if(reposRes.ok) {
+      repos = await reposRes.json();
+      totalStars = repos.reduce((sum: number, r: any) => sum + r.stargazers_count, 0);
+      totalForks = repos.reduce((sum: number, r: any) => sum + r.forks_count, 0);
+    }
+    if(eventsRes.ok) events = await eventsRes.json();
+
+    languages = Array.from(new Set(repos.map((r: any) => r.language).filter(Boolean)));
+    featuredRepos = repos
+      .sort((a: any, b: any) => b.stargazers_count - a.stargazers_count || new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+      .slice(0, 6);
+
+    console.log('Datos descargados exitosamente, repos:', repos.length, 'featured:', featuredRepos.length);
+  } catch(e) {
+    console.error('GitHub fetch error', e);
+    // Datos de ejemplo si falla el fetch
+    repos = [
+      { name: 'portfolio', description: 'Mi portfolio personal', html_url: 'https://github.com/ivanmayoraldev/portfolio', stargazers_count: 5, language: 'Astro', updated_at: new Date().toISOString(), forks_count: 2 },
+      { name: 'ejemplo-repo', description: 'Repo de ejemplo', html_url: 'https://github.com/ivanmayoraldev/ejemplo', stargazers_count: 1, language: 'JavaScript', updated_at: new Date().toISOString(), forks_count: 0 }
+    ];
+    events = [
+      { type: 'PushEvent', repo: { name: 'portfolio' }, created_at: new Date().toISOString() }
+    ];
+    totalStars = repos.reduce((sum: number, r: any) => sum + r.stargazers_count, 0);
+    totalForks = repos.reduce((sum: number, r: any) => sum + r.forks_count, 0);
+    languages = ['Astro', 'JavaScript'];
+    featuredRepos = repos.slice(0, 6);
+    console.log('Usando datos de ejemplo debido a error en fetch');
+  }
+}
+
+await fetchGitHubData();
+---
+
+<section class="max-w-6xl mx-auto px-4 py-16 md:py-24" id="Career">
+  <!-- Tabs Navigation -->
+  <div class="flex justify-center gap-2 mb-10 flex-wrap">
+    <button class="tab-button px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200
+                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10
+                   data-[active=true]:bg-black dark:data-[active=true]:bg-white
+                   data-[active=true]:text-white dark:data-[active=true]:text-black"
+            data-tab="featured" data-active="true">🌟 Destacados</button>
+    <button class="tab-button px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200
+                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
+            data-tab="all">📁 Todos los Repos</button>
+    <button class="tab-button px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200
+                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
+            data-tab="activity">🔥 Actividad</button>
+  </div>
+
+  <!-- Tab Content: Destacados -->
+  <div class="tab-content" data-tab="featured">
+    {featuredRepos.length > 0 ? featuredRepos.map(repo => (
+      <a href={repo.html_url} target="_blank" rel="noopener noreferrer"
+         class="group block p-6 rounded-xl border border-black/10 dark:border-white/10
+                hover:border-black/20 dark:hover:border-white/20 transition-all duration-200 hover:shadow-xl hover:-translate-y-1 mb-4">
+        <div class="flex items-start justify-between mb-3">
+          <h3 class="text-lg font-bold">{repo.name}</h3>
+          {repo.stargazers_count > 0 && (
+            <span class="flex items-center gap-1 text-sm opacity-60 ml-2 flex-shrink-0">
+              ⭐ {repo.stargazers_count}
+            </span>
+          )}
+        </div>
+        <p class="text-sm opacity-70 mb-2">{repo.description || 'Sin descripción'}</p>
+        {repo.language && (
+          <span class={`px-2 py-1 text-xs rounded-full ${getLanguageColor(repo.language)} font-medium`}>{repo.language}</span>
+        )}
+        <div class="text-xs opacity-50 mt-2">Actualizado {formatDate(repo.updated_at)}</div>
+      </a>
+    )) : (
+      <p class="text-center opacity-60">Cargando proyectos destacados...</p>
+    )}
+  </div>
+
+  <!-- Tab Content: Todos los Repos -->
+  <div class="tab-content hidden" data-tab="all">
+    {repos.length > 0 ? repos.map(repo => (
+      <a href={repo.html_url} target="_blank" rel="noopener noreferrer"
+         class="block p-5 rounded-lg border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all duration-200 hover:shadow-lg mb-3">
+        <h3 class="text-base font-semibold">{repo.name}</h3>
+        <p class="text-sm opacity-70">{repo.description || 'Sin descripción'}</p>
+        {repo.language && (
+          <span class={`px-2 py-1 text-xs rounded-full ${getLanguageColor(repo.language)} font-medium`}>{repo.language}</span>
+        )}
+        <div class="text-xs opacity-50 mt-1">{formatDate(repo.updated_at)}</div>
+      </a>
+    )) : (
+      <p class="text-center opacity-60">Cargando repositorios...</p>
+    )}
+  </div>
+
+  <!-- Tab Content: Actividad -->
+  <div class="tab-content hidden" data-tab="activity">
+    {events.length > 0 ? events.map(event => (
+      <div class="p-4 rounded-lg border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors mb-3">
+        <span class="text-2xl">{getEventIcon(event.type)}</span>
+        <a href={`https://github.com/${event.repo.name}`} target="_blank" class="font-medium ml-2">{event.repo.name}</a>
+        <span class="text-xs opacity-50 ml-2">{formatDate(event.created_at)}</span>
+        <p class="text-sm opacity-70 mt-1">{getEventDescription(event)}</p>
+      </div>
+    )) : (
+      <p class="text-center opacity-60">Cargando actividad...</p>
+    )}
+  </div>
+</section>
+
+<script>
+document.addEventListener('astro:page-load', () => {
+  const buttons = document.querySelectorAll('.tab-button');
+  const contents = document.querySelectorAll('.tab-content');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const target = button.getAttribute('data-tab');
+      buttons.forEach(btn => btn.setAttribute('data-active','false'));
+      button.setAttribute('data-active','true');
+      contents.forEach(content => {
+        if(content.getAttribute('data-tab')===target){
+          content.classList.remove('hidden');
+        } else {
+          content.classList.add('hidden');
+        }
+      });
+    });
+  });
+});
+</script>
+
+<style>
+.tab-content { transition: all 0.3s ease; }
+</style>

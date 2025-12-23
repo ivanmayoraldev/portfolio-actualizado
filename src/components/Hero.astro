@@ -1,77 +1,122 @@
 ---
-const personalImageAlt = "Iván Mayoral Capel"
-import Badge from "@/components/Badge.astro"
-import LinkedInIcon from "@/components/icons/LinkedIn.astro"
-import MailIcon from "@/components/icons/Mail.astro"
-import SocialPill from "@/components/SocialPill.astro"
-import TechStack from "@/components/TechStack.astro"
+// Hero.astro - Sincronizado con GitHub
+const GITHUB_USERNAME = 'ivanmayoraldev';
+
+interface GitHubUser {
+  name: string;
+  bio: string;
+  location: string;
+  blog: string;
+  avatar_url: string;
+  twitter_username: string;
+  html_url: string;
+}
+
+// Fetch datos del usuario desde GitHub
+let userData: GitHubUser | null = null;
+
+try {
+  const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`);
+  if (response.ok) {
+    userData = await response.json();
+  }
+} catch (error) {
+  console.error('Error fetching GitHub data:', error);
+}
+
+// Fallback si no hay datos
+const displayName = userData?.name || "Iván Mayoral Capel";
+const displayBio = userData?.bio || "Backend Developer | Python · FastAPI • PostgreSQL | AWS • Docker | Clean Architecture • Scalable APIs & Microservices";
+const displayLocation = userData?.location || "Madrid, España";
+const displayWebsite = userData?.blog || "https://ivan-mayoral.vercel.app";
+const avatarUrl = userData?.avatar_url || "/logo.jpg";
 ---
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6" id="inicio">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-24" id="Home">
+  <!-- Avatar con efecto -->
   <div class="relative mb-6 w-full flex justify-center">
-    <div class="absolute inset-0 bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 dark:from-yellow-400 dark:via-orange-400 dark:to-red-500 rounded-full blur-3xl opacity-40 animate-pulse scale-110"></div>
+    <div
+      class="absolute inset-0 bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 dark:from-yellow-400 dark:via-orange-400 dark:to-red-500 rounded-full blur-3xl opacity-40 animate-pulse scale-110"
+    >
+    </div>
     <img
       class="relative rounded-full shadow-2xl size-28 sm:size-40 md:size-44 ring-4 ring-white dark:ring-gray-800 transition-all duration-500 hover:scale-105 hover:ring-8"
-      src="/logo.jpg"
-      alt={personalImageAlt}
+      src={avatarUrl}
+      alt={displayName}
     />
   </div>
 
-  <h1 class="text-center text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-gray-800 dark:text-white leading-tight mb-3 px-2">
-    Iván Mayoral Capel
+  <!-- Nombre -->
+  <h1
+    class="text-center text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-gray-800 dark:text-white leading-tight mb-3 px-2"
+  >
+    {displayName}
   </h1>
 
-  <p class="text-center text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 mb-6 px-2">
-    Desarrollador Backend Junior
+  <!-- Título profesional desde GitHub bio -->
+  <p
+    class="text-center text-lg sm:text-xl md:text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 mb-6 px-2"
+  >
+    {displayBio.split('|')[0].trim()}
   </p>
 
+  <!-- Descripción expandida -->
   <div class="mb-10 max-w-3xl mx-auto space-y-4 px-2">
-    <p class="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-      <strong class="text-gray-800 dark:text-gray-200">22 años, Madrid.</strong> Graduado en <strong class="text-gray-700 dark:text-gray-300">DAW</strong>, cursando actualmente <strong class="text-gray-700 dark:text-gray-300">DAM</strong>. En 2026 comenzaré <strong class="text-gray-700 dark:text-gray-300">Ingeniería Informática</strong> especializado en Ingeniería de Software.
-    </p>
     <p class="text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-      <strong class="text-yellow-600 dark:text-yellow-400">Desarrollador Backend especializado en Python, FastAPI y PostgreSQL.</strong> Actualmente desarrollando módulos custom para <strong class="text-yellow-600 dark:text-yellow-400">Odoo ERP</strong>, gestionando migraciones complejas entre versiones (v15-v18) y creación de scripts para las migraciones complejas.
+      <strong class="text-gray-800 dark:text-gray-200">23 años, {displayLocation}.</strong>
+      Apasionado por el <strong class="text-yellow-600 dark:text-yellow-400">desarrollo backend</strong> y la creación de 
+      <strong class="text-yellow-600 dark:text-yellow-400">APIs robustas y escalables</strong>. Especializado en 
+      <strong class="text-yellow-600 dark:text-yellow-400">Python, Django y MySQL/PostgreSQL</strong>, con experiencia en 
+      <strong class="text-yellow-600 dark:text-yellow-400">desarrollo de módulos custom para Odoo ERP</strong> y principios de 
+      <strong class="text-yellow-600 dark:text-yellow-400">Clean Architecture, AWS y Docker</strong>.
+    </p>
+
+    <p class="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+      Graduado en <strong class="text-gray-700 dark:text-gray-300">DAW</strong>, cursando <strong class="text-gray-700 dark:text-gray-300">DAM</strong> y en 2026 comenzaré 
+      <strong class="text-gray-700 dark:text-gray-300">Ingeniería Informática</strong> especializado en <strong class="text-gray-700 dark:text-gray-300">Ingeniería de Software</strong>.
     </p>
   </div>
 
-  <div class="mb-12 px-2">
-    <TechStack />
-  </div>
-
+  <!-- Botones de acción -->
   <div class="max-w-3xl mx-auto px-2">
-    <div class="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-5 sm:gap-4">
-      <div class="w-full sm:w-auto relative px-4 py-2 bg-green-500 dark:bg-green-600 text-white font-bold text-xs sm:text-sm rounded-full shadow-lg flex items-center justify-center gap-2 ring-2 ring-green-300 dark:ring-green-400">
+    <div
+      class="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-5 sm:gap-4"
+    >
+      <!-- Badge disponible -->
+      <div
+        class="w-full sm:w-auto relative px-4 py-2 bg-green-500 dark:bg-green-600 text-white font-bold text-xs sm:text-sm rounded-full shadow-lg flex items-center justify-center gap-2 ring-2 ring-green-300 dark:ring-green-400"
+      >
         <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+          <span
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"
+          ></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-white"
+          ></span>
         </span>
         Disponible para trabajar
       </div>
+
+      <!-- Botón CV -->
       <a
         href="/cv.pdf"
         download="Ivan_Mayoral_Capel_CV.pdf"
-        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-full transition-all duration-300 hover:scale-105 shadow-lg font-bold text-xs sm:text-sm ring-2 ring-blue-300 dark:ring-blue-400"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white rounded-full transition-all duration-300 hover:scale-105 shadow-lg font-bold text-xs sm:text-sm ring-2 ring-purple-300 dark:ring-purple-400"
       >
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        <svg
+          class="w-3.5 h-3.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          ></path>
         </svg>
         Descargar CV
       </a>
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const emailButton = document.querySelector('button[onclick*="clipboard"]');
-    if (emailButton) {
-      emailButton.addEventListener('click', () => {
-        const notification = document.createElement('div');
-        notification.textContent = '✓ Email copiado';
-        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in';
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 2000);
-      });
-    }
-  });
-</script>
