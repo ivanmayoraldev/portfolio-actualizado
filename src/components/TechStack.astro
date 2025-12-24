@@ -1,58 +1,71 @@
-<div>
-  <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="w-10 h-10 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-12 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">Python</span>
+---
+// TechStack.astro
+const techStack = {
+  languages: [
+    { name: "Python", icon: "🐍", color: "from-blue-500 to-yellow-500" },
+    { name: "JavaScript", icon: "⚡", color: "from-yellow-400 to-yellow-600" },
+    { name: "TypeScript", icon: "📘", color: "from-blue-600 to-blue-400" },
+    { name: "SQL", icon: "🗄️", color: "from-orange-500 to-red-500" },
+  ],
+  frameworks: [
+    { name: "Django", icon: "🎯", color: "from-green-600 to-green-800" },
+    { name: "FastAPI", icon: "⚡", color: "from-teal-500 to-green-500" },
+    { name: "React", icon: "⚛️", color: "from-blue-400 to-cyan-400" },
+    { name: "Astro", icon: "🚀", color: "from-purple-500 to-pink-500" },
+  ],
+  tools: [
+    { name: "PostgreSQL", icon: "🐘", color: "from-blue-600 to-blue-800" },
+    { name: "Docker", icon: "🐳", color: "from-blue-500 to-blue-600" },
+    { name: "AWS", icon: "☁️", color: "from-orange-400 to-yellow-500" },
+    { name: "Git", icon: "📦", color: "from-red-500 to-orange-500" },
+    { name: "Odoo ERP", icon: "💼", color: "from-purple-600 to-purple-800" },
+  ],
+};
+---
+
+<div class="bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800">
+  <h2 class="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
+    🛠️ Tech Stack
+  </h2>
+
+  <div class="space-y-6">
+    <!-- Languages -->
+    <div>
+      <h3 class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">Lenguajes</h3>
+      <div class="flex flex-wrap gap-2">
+        {techStack.languages.map((tech) => (
+          <div class={`group relative px-4 py-2 bg-gradient-to-r ${tech.color} rounded-lg text-white font-medium text-sm transition-all duration-300 hover:scale-105 hover:shadow-lg`}>
+            <span class="mr-2">{tech.icon}</span>
+            {tech.name}
+          </div>
+        ))}
+      </div>
     </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#" class="w-10 h-10 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-12 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">C#</span>
+
+    <!-- Frameworks -->
+    <div>
+      <h3 class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">Frameworks</h3>
+      <div class="flex flex-wrap gap-2">
+        {techStack.frameworks.map((tech) => (
+          <div class={`group relative px-4 py-2 bg-gradient-to-r ${tech.color} rounded-lg text-white font-medium text-sm transition-all duration-300 hover:scale-105 hover:shadow-lg`}>
+            <span class="mr-2">{tech.icon}</span>
+            {tech.name}
+          </div>
+        ))}
+      </div>
     </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dot-net/dot-net-original.svg" alt=".NET" class="w-10 h-10 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-12 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">.NET</span>
-    </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="w-10 h-10 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-12 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">Java</span>
-    </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" class="w-10 h-10 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-12 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">PostgreSQL</span>
-    </div>
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP" class="w-7 h-7 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-9 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">PHP</span>
-    </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg" alt="Laravel" class="w-7 h-7 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-9 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">Laravel</span>
-    </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="FastAPI" class="w-7 h-7 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-9 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">FastAPI</span>
-    </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS" class="w-7 h-7 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-9 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">AWS</span>
-    </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" class="w-7 h-7 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-9 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">Docker</span>
-    </div>
-    
-    <div class="group relative flex items-center">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes" class="w-7 h-7 group-hover:scale-125 transition-all duration-300 opacity-80 group-hover:opacity-100" />
-      <span class="absolute left-9 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-gray-800 dark:bg-gray-700 text-white px-2 py-1 rounded text-xs font-semibold transition-opacity duration-300 pointer-events-none z-10">Kubernetes</span>
+
+    <!-- Tools & Platforms -->
+    <div>
+      <h3 class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">Herramientas & Plataformas</h3>
+      <div class="flex flex-wrap gap-2">
+        {techStack.tools.map((tech) => (
+          <div class={`group relative px-4 py-2 bg-gradient-to-r ${tech.color} rounded-lg text-white font-medium text-sm transition-all duration-300 hover:scale-105 hover:shadow-lg`}>
+            <span class="mr-2">{tech.icon}</span>
+            {tech.name}
+          </div>
+        ))}
+      </div>
     </div>
   </div>
-  
 </div>

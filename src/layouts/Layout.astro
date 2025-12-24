@@ -1,7 +1,6 @@
 ---
 import "@fontsource-variable/onest"
 
-import Header from "../components/Header.astro"
 import { ViewTransitions } from "astro:transitions"
 
 interface Props {
@@ -31,7 +30,6 @@ const { description, title } = Astro.props
       dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"
     >
     </div>
-    <Header />
     <slot />
     <style is:global>
       :root {
@@ -41,7 +39,7 @@ const { description, title } = Astro.props
       html {
         font-family: "Onest Variable", system-ui, sans-serif;
         scroll-behavior: smooth;
-        overflow-x: hidden;
+        overflow: hidden;
       }
 
       body {
@@ -50,7 +48,7 @@ const { description, title } = Astro.props
         flex-direction: column;
         min-height: 100vh;
         overscroll-behavior: none;
-        overflow-x: hidden;
+        overflow: hidden;
       }
 
       @media (prefers-reduced-motion: reduce) {

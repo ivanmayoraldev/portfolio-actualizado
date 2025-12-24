@@ -1,178 +1,597 @@
 ---
-const GITHUB_USERNAME = 'ivanmayoraldev';
+const GITHUB_USERNAME = "ivanmayoraldev";
 
 let userData: any = null;
 let repos: any[] = [];
 let events: any[] = [];
 let totalStars = 0;
 let totalForks = 0;
-let featuredRepos: any[] = [];
-let languages: string[] = [];
+let totalCommits = 0;
+let contributionData: any[] = [];
+
+// Datos de educación y certificaciones
+const education = [
+    {
+        title: "Desarrollo de Aplicaciones Multiplataforma",
+        institution: "Sinergia FP",
+        year: "2025 - Actualidad",
+        description: "Acceso a Datos, Programación de Servicios y Procesos, Desarrollo de Interfaces, Sistemas de Gestión Empresarial, Desarrollo Móvil.",
+    },
+    {
+        title: "Desarrollo de Aplicaciones Web",
+        institution: "CFP JuanXXIII",
+        year: "2023 - 2025",
+        description: "Frontend y Backend Development, Bases de Datos, Despliegue de Aplicaciones, Usabilidad y Accesibilidad.",
+    }
+];
+
+// Datos de experiencia laboral
+const experience = [
+    {
+        position: "Desarrollador Backend Trainee",
+        company: "Vortex Dimension Digital S.L",
+        period: "Septiembre 2025 - Diciembre 2025",
+        description:
+            "Desarrollo de Módulos Custom en Odoo ERP utilizando Python, XML, PostgreSQL en entorno Ubuntu. Formación a empresas de mis proyectos desarrollados. Migración de bases de datos y módulos entre versiones de Odoo.",
+        skills: ["Python", "XML", "PostgreSQL", "Ubuntu", "Odoo ERP"],
+    }
+];
+
+// Más información personal
+const personalInfo = {
+    interests: ["Desarrollo de Software", "Inteligencia Artificial", "Ciberseguridad", "Tecnología Blockchain", "Desarrollo Móvil"],
+    languages: [
+        { name: "Español", level: "Nativo" },
+        { name: "Inglés", level: "C1 Avanzado" },
+        { name: "Francés", level: "B1 Intermedio" }
+    ],
+    certifications: [
+        "Certificación Python Developer",
+        "AWS Cloud Practitioner",
+        "Docker Certified Associate",
+        "MongoDB Certified Developer"
+    ],
+    softSkills: ["Trabajo en equipo", "Resolución de problemas", "Aprendizaje continuo", "Comunicación efectiva", "Liderazgo técnico"]
+};
 
 // Funciones auxiliares
 function getLanguageColor(lang: string): string {
-  const colors: Record<string, string> = { JavaScript:'bg-yellow-400', Python:'bg-blue-400', HTML:'bg-orange-400', CSS:'bg-blue-200' };
-  return colors[lang] || 'bg-gray-400';
+    const colors: Record<string, string> = {
+        JavaScript: "bg-yellow-400",
+        Python: "bg-blue-400",
+        HTML: "bg-orange-400",
+        CSS: "bg-blue-200",
+        TypeScript: "bg-blue-500",
+        Astro: "bg-purple-500",
+    };
+    return colors[lang] || "bg-gray-400";
 }
 
 function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString();
+    return new Date(dateString).toLocaleDateString('es-ES', { 
+        month: 'short', 
+        day: 'numeric' 
+    });
 }
 
 function getEventIcon(type: string): string {
-  const icons: Record<string, string> = { PushEvent:'📦', PullRequestEvent:'🔀', IssuesEvent:'❗' };
-  return icons[type] || '⚡';
+    const icons: Record<string, string> = {
+        PushEvent: "📦",
+        PullRequestEvent: "🔀",
+        IssuesEvent: "❗",
+        CreateEvent: "✨",
+        WatchEvent: "⭐",
+        ForkEvent: "🍴",
+    };
+    return icons[type] || "⚡";
 }
 
 function getEventDescription(event: any): string {
-  switch(event.type){
-    case 'PushEvent': return `Push a ${event.repo.name}`;
-    case 'PullRequestEvent': return `Pull request en ${event.repo.name}`;
-    case 'IssuesEvent': return `Issue en ${event.repo.name}`;
-    default: return event.type;
-  }
+    const repoName = event.repo.name.split('/')[1];
+    switch (event.type) {
+        case "PushEvent":
+            const commits = event.payload?.commits?.length || 1;
+            return `${commits} commit${commits > 1 ? 's' : ''} en ${repoName}`;
+        case "CreateEvent":
+            return `Creó ${event.payload?.ref_type} en ${repoName}`;
+        case "WatchEvent":
+            return `Starred ${repoName}`;
+        case "ForkEvent":
+            return `Forked ${repoName}`;
+        case "PullRequestEvent":
+            return `${event.payload?.action} PR en ${repoName}`;
+        case "IssuesEvent":
+            return `${event.payload?.action} issue en ${repoName}`;
+        default:
+            return event.type.replace('Event', '');
+    }
+}
+
+// Generar datos de contribución reales desde eventos de GitHub
+function generateContributionData(githubEvents: any[]) {
+    const data: any = {};
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setDate(startDate.getDate() - 364); // Últimos 365 días
+
+    // Inicializar todos los días con 0
+    for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split('T')[0];
+        data[dateStr] = 0;
+    }
+
+    // Contar contribuciones reales desde eventos
+    githubEvents.forEach((event: any) => {
+        const dateStr = event.created_at.split('T')[0];
+        if (data[dateStr] !== undefined) {
+            if (event.type === 'PushEvent') {
+                data[dateStr] += event.payload?.commits?.length || 1;
+            } else {
+                data[dateStr] += 1;
+            }
+        }
+    });
+
+    // Convertir a formato de semanas
+    const weeks: any[] = [];
+    let currentWeek: any[] = [];
+    
+    for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split('T')[0];
+        currentWeek.push({
+            date: dateStr,
+            count: data[dateStr] || 0
+        });
+        
+        if (currentWeek.length === 7) {
+            weeks.push(currentWeek);
+            currentWeek = [];
+        }
+    }
+    
+    if (currentWeek.length > 0) {
+        weeks.push(currentWeek);
+    }
+
+    return weeks;
 }
 
 // Fetch GitHub
 async function fetchGitHubData() {
-  console.log('Descargando datos de GitHub...');
-  try {
-    const [userRes, reposRes, eventsRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, { headers: { 'User-Agent': 'Portfolio-App' } }),
-      fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=50`, { headers: { 'User-Agent': 'Portfolio-App' } }),
-      fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=10`, { headers: { 'User-Agent': 'Portfolio-App' } }),
-    ]);
+    console.log("Descargando datos reales de GitHub...");
+    try {
+        const [userRes, reposRes, eventsRes] = await Promise.all([
+            fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
+                headers: { "User-Agent": "Portfolio-App" },
+            }),
+            fetch(
+                `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`,
+                { headers: { "User-Agent": "Portfolio-App" } },
+            ),
+            fetch(
+                `https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=100`,
+                { headers: { "User-Agent": "Portfolio-App" } },
+            ),
+        ]);
 
-    if(userRes.ok) userData = await userRes.json();
-    if(reposRes.ok) {
-      repos = await reposRes.json();
-      totalStars = repos.reduce((sum: number, r: any) => sum + r.stargazers_count, 0);
-      totalForks = repos.reduce((sum: number, r: any) => sum + r.forks_count, 0);
+        if (userRes.ok) {
+            userData = await userRes.json();
+            console.log("Usuario cargado:", userData.login);
+        }
+        
+        if (reposRes.ok) {
+            repos = await reposRes.json();
+            totalStars = repos.reduce(
+                (sum: number, r: any) => sum + r.stargazers_count,
+                0,
+            );
+            totalForks = repos.reduce(
+                (sum: number, r: any) => sum + r.forks_count,
+                0,
+            );
+            console.log(`Repositorios cargados: ${repos.length}, Stars: ${totalStars}, Forks: ${totalForks}`);
+        }
+        
+        if (eventsRes.ok) {
+            events = await eventsRes.json();
+            totalCommits = events
+                .filter((e: any) => e.type === "PushEvent")
+                .reduce((sum: number, e: any) => sum + (e.payload?.commits?.length || 0), 0);
+            
+            contributionData = generateContributionData(events);
+            console.log(`Eventos cargados: ${events.length}, Commits totales: ${totalCommits}`);
+        }
+
+    } catch (e) {
+        console.error("Error al obtener datos de GitHub:", e);
+        // Si falla, inicializar con datos vacíos
+        repos = [];
+        events = [];
+        totalStars = 0;
+        totalForks = 0;
+        totalCommits = 0;
+        contributionData = [];
     }
-    if(eventsRes.ok) events = await eventsRes.json();
-
-    languages = Array.from(new Set(repos.map((r: any) => r.language).filter(Boolean)));
-    featuredRepos = repos
-      .sort((a: any, b: any) => b.stargazers_count - a.stargazers_count || new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-      .slice(0, 6);
-
-    console.log('Datos descargados exitosamente, repos:', repos.length, 'featured:', featuredRepos.length);
-  } catch(e) {
-    console.error('GitHub fetch error', e);
-    // Datos de ejemplo si falla el fetch
-    repos = [
-      { name: 'portfolio', description: 'Mi portfolio personal', html_url: 'https://github.com/ivanmayoraldev/portfolio', stargazers_count: 5, language: 'Astro', updated_at: new Date().toISOString(), forks_count: 2 },
-      { name: 'ejemplo-repo', description: 'Repo de ejemplo', html_url: 'https://github.com/ivanmayoraldev/ejemplo', stargazers_count: 1, language: 'JavaScript', updated_at: new Date().toISOString(), forks_count: 0 }
-    ];
-    events = [
-      { type: 'PushEvent', repo: { name: 'portfolio' }, created_at: new Date().toISOString() }
-    ];
-    totalStars = repos.reduce((sum: number, r: any) => sum + r.stargazers_count, 0);
-    totalForks = repos.reduce((sum: number, r: any) => sum + r.forks_count, 0);
-    languages = ['Astro', 'JavaScript'];
-    featuredRepos = repos.slice(0, 6);
-    console.log('Usando datos de ejemplo debido a error en fetch');
-  }
 }
 
 await fetchGitHubData();
 ---
 
-<section class="max-w-6xl mx-auto px-4 py-16 md:py-24" id="Career">
-  <!-- Tabs Navigation -->
-  <div class="flex justify-center gap-2 mb-10 flex-wrap">
-    <button class="tab-button px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200
+<div class="h-full flex flex-col text-white">
+    <!-- Slider Navigation -->
+    <div class="flex justify-center gap-1 mb-4 flex-wrap flex-shrink-0">
+        <button
+            class="slider-nav px-3 py-2 rounded-full text-xs font-medium transition-all duration-200
                    bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10
                    data-[active=true]:bg-black dark:data-[active=true]:bg-white
                    data-[active=true]:text-white dark:data-[active=true]:text-black"
-            data-tab="featured" data-active="true">🌟 Destacados</button>
-    <button class="tab-button px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200
-                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
-            data-tab="all">📁 Todos los Repos</button>
-    <button class="tab-button px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200
-                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
-            data-tab="activity">🔥 Actividad</button>
-  </div>
+            data-slide="0">ℹ️ Sobre Mí</button>
+        
+        <button
+            class="slider-nav px-3 py-2 rounded-full text-xs font-medium transition-all duration-200
+                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10
+                   data-[active=true]:bg-black dark:data-[active=true]:bg-white
+                   data-[active=true]:text-white dark:data-[active=true]:text-black"
+            data-slide="1">🎓 Estudios</button>
+        <button
+            class="slider-nav px-3 py-2 rounded-full text-xs font-medium transition-all duration-200
+                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10
+                   data-[active=true]:bg-black dark:data-[active=true]:bg-white
+                   data-[active=true]:text-white dark:data-[active=true]:text-black"
+            data-slide="2">💼 Experiencia</button>
 
-  <!-- Tab Content: Destacados -->
-  <div class="tab-content" data-tab="featured">
-    {featuredRepos.length > 0 ? featuredRepos.map(repo => (
-      <a href={repo.html_url} target="_blank" rel="noopener noreferrer"
-         class="group block p-6 rounded-xl border border-black/10 dark:border-white/10
-                hover:border-black/20 dark:hover:border-white/20 transition-all duration-200 hover:shadow-xl hover:-translate-y-1 mb-4">
-        <div class="flex items-start justify-between mb-3">
-          <h3 class="text-lg font-bold">{repo.name}</h3>
-          {repo.stargazers_count > 0 && (
-            <span class="flex items-center gap-1 text-sm opacity-60 ml-2 flex-shrink-0">
-              ⭐ {repo.stargazers_count}
-            </span>
-          )}
+        <button
+            class="slider-nav px-3 py-2 rounded-full text-xs font-medium transition-all duration-200
+                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10
+                   data-[active=true]:bg-black dark:data-[active=true]:bg-white
+                   data-[active=true]:text-white dark:data-[active=true]:text-black"
+            data-slide="3"
+            data-active="true">📊 Dashboard</button>
+        <button
+            class="slider-nav px-3 py-2 rounded-full text-xs font-medium transition-all duration-200
+                   bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10
+                   data-[active=true]:bg-black dark:data-[active=true]:bg-white
+                   data-[active=true]:text-white dark:data-[active=true]:text-black"
+            data-slide="4">🚀 Proyectos</button>
+    </div>
+
+    <!-- Slider Container -->
+    <div class="slider-container relative overflow-hidden flex-1">
+        <!-- Slide 0: Dashboard de Actividad -->
+        <div class="slider-slide absolute inset-0 transition-transform duration-500 ease-in-out" data-slide="3">
+            <div class="space-y-4 h-full overflow-y-auto pr-2">
+                <!-- Estadísticas principales -->
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="text-center p-3 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20">
+                        <div class="text-2xl font-bold text-blue-400">{repos.length}</div>
+                        <div class="text-xs opacity-70">Repos</div>
+                    </div>
+                    <div class="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 border border-yellow-500/20">
+                        <div class="text-2xl font-bold text-yellow-400">{totalStars}</div>
+                        <div class="text-xs opacity-70">Stars</div>
+                    </div>
+                    <div class="text-center p-3 rounded-lg bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20">
+                        <div class="text-2xl font-bold text-purple-400">{totalForks}</div>
+                        <div class="text-xs opacity-70">Forks</div>
+                    </div>
+                    <div class="text-center p-3 rounded-lg bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
+                        <div class="text-2xl font-bold text-green-400">{totalCommits}</div>
+                        <div class="text-xs opacity-70">Commits</div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de contribuciones -->
+                {contributionData.length > 0 && (
+                    <div class="p-4 rounded-lg border border-white/10 bg-black/20">
+                        <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                            📈 Actividad de Contribución
+                        </h3>
+                        <div class="contribution-graph overflow-x-auto pb-2">
+                            <div class="flex gap-1">
+                                {contributionData.map((week) => (
+                                    <div class="flex flex-col gap-1">
+                                        {week.map((day: any) => {
+                                            const level = day.count === 0 ? 0 : day.count < 3 ? 1 : day.count < 6 ? 2 : 3;
+                                            const colors = [
+                                                'bg-gray-800',
+                                                'bg-green-900/50',
+                                                'bg-green-600/60',
+                                                'bg-green-500'
+                                            ];
+                                            return (
+                                                <div 
+                                                    class={`w-3 h-3 rounded-sm ${colors[level]} hover:ring-2 hover:ring-white/50 transition-all cursor-pointer`}
+                                                    title={`${day.count} contributions on ${day.date}`}
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 mt-3 text-xs opacity-60">
+                            <span>Menos</span>
+                            <div class="flex gap-1">
+                                <div class="w-3 h-3 rounded-sm bg-gray-800"></div>
+                                <div class="w-3 h-3 rounded-sm bg-green-900/50"></div>
+                                <div class="w-3 h-3 rounded-sm bg-green-600/60"></div>
+                                <div class="w-3 h-3 rounded-sm bg-green-500"></div>
+                            </div>
+                            <span>Más</span>
+                        </div>
+                    </div>
+                )}
+
+                <!-- Actividad reciente -->
+                {events.length > 0 && (
+                    <div class="p-4 rounded-lg border border-white/10 bg-black/20">
+                        <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                            ⚡ Actividad Reciente
+                        </h3>
+                        <div class="space-y-2">
+                            {events.slice(0, 8).map((event) => (
+                                <div class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition-colors">
+                                    <span class="text-lg flex-shrink-0">{getEventIcon(event.type)}</span>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm truncate">{getEventDescription(event)}</p>
+                                        <p class="text-xs opacity-50">{formatDate(event.created_at)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {repos.length === 0 && (
+                    <div class="text-center py-8 opacity-60">
+                        <p>No se pudieron cargar los datos de GitHub</p>
+                        <p class="text-sm mt-2">Verifica la conexión y el nombre de usuario</p>
+                    </div>
+                )}
+            </div>
         </div>
-        <p class="text-sm opacity-70 mb-2">{repo.description || 'Sin descripción'}</p>
-        {repo.language && (
-          <span class={`px-2 py-1 text-xs rounded-full ${getLanguageColor(repo.language)} font-medium`}>{repo.language}</span>
-        )}
-        <div class="text-xs opacity-50 mt-2">Actualizado {formatDate(repo.updated_at)}</div>
-      </a>
-    )) : (
-      <p class="text-center opacity-60">Cargando proyectos destacados...</p>
-    )}
-  </div>
 
-  <!-- Tab Content: Todos los Repos -->
-  <div class="tab-content hidden" data-tab="all">
-    {repos.length > 0 ? repos.map(repo => (
-      <a href={repo.html_url} target="_blank" rel="noopener noreferrer"
-         class="block p-5 rounded-lg border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all duration-200 hover:shadow-lg mb-3">
-        <h3 class="text-base font-semibold">{repo.name}</h3>
-        <p class="text-sm opacity-70">{repo.description || 'Sin descripción'}</p>
-        {repo.language && (
-          <span class={`px-2 py-1 text-xs rounded-full ${getLanguageColor(repo.language)} font-medium`}>{repo.language}</span>
-        )}
-        <div class="text-xs opacity-50 mt-1">{formatDate(repo.updated_at)}</div>
-      </a>
-    )) : (
-      <p class="text-center opacity-60">Cargando repositorios...</p>
-    )}
-  </div>
+        <!-- Slide 1: Estudios -->
+        <div class="slider-slide absolute inset-0 transition-transform duration-500 ease-in-out translate-x-full" data-slide="1">
+            <div class="space-y-4 h-full overflow-y-auto pr-2">
+                <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                    🎓 Estudios
+                </h3>
+                <div class="space-y-3">
+                    {education.map((edu) => (
+                        <div class="p-4 rounded-lg border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-semibold">{edu.title}</h4>
+                                <span class="text-xs opacity-60 bg-black/5 dark:bg-white/5 px-2 py-1 rounded-full">
+                                    {edu.year}
+                                </span>
+                            </div>
+                            <p class="text-sm opacity-70 mb-2">{edu.institution}</p>
+                            <p class="text-sm opacity-80">{edu.description}</p>
+                        </div>
+                    ))}
+                </div>
 
-  <!-- Tab Content: Actividad -->
-  <div class="tab-content hidden" data-tab="activity">
-    {events.length > 0 ? events.map(event => (
-      <div class="p-4 rounded-lg border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors mb-3">
-        <span class="text-2xl">{getEventIcon(event.type)}</span>
-        <a href={`https://github.com/${event.repo.name}`} target="_blank" class="font-medium ml-2">{event.repo.name}</a>
-        <span class="text-xs opacity-50 ml-2">{formatDate(event.created_at)}</span>
-        <p class="text-sm opacity-70 mt-1">{getEventDescription(event)}</p>
-      </div>
-    )) : (
-      <p class="text-center opacity-60">Cargando actividad...</p>
-    )}
-  </div>
-</section>
+                <h3 class="text-lg font-bold mb-3 flex items-center gap-2 mt-6">
+                    🏆 Certificaciones
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {personalInfo.certifications.map((cert) => (
+                        <div class="p-3 rounded-lg border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                            <span class="text-sm font-medium">{cert}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Experiencia -->
+        <div class="slider-slide absolute inset-0 transition-transform duration-500 ease-in-out translate-x-full" data-slide="2">
+            <div class="space-y-4 h-full overflow-y-auto pr-2">
+                <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                    💼 Experiencia Laboral
+                </h3>
+                {experience.map((job) => (
+                    <div class="p-4 rounded-lg border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold">{job.position}</h4>
+                            <span class="text-xs opacity-60 bg-black/5 dark:bg-white/5 px-2 py-1 rounded-full">
+                                {job.period}
+                            </span>
+                        </div>
+                        <p class="text-sm opacity-70 mb-2">{job.company}</p>
+                        <p class="text-sm opacity-80 mb-3">{job.description}</p>
+                        <div class="flex flex-wrap gap-2">
+                            {job.skills.map((skill) => (
+                                <span class="px-2 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400 font-medium">
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+        <!-- Slide 3: Sobre Mí -->
+        <div class="slider-slide absolute inset-0 transition-transform duration-500 ease-in-out translate-x-full" data-slide="0">
+            <div class="space-y-4 h-full overflow-y-auto pr-2">
+                <!-- Intereses -->
+                <div>
+                    <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                        💡 Intereses
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        {personalInfo.interests.map((interest) => (
+                            <span class="px-3 py-2 text-sm rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 font-medium">
+                                {interest}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                <!-- Idiomas -->
+                <div>
+                    <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                        🌍 Idiomas
+                    </h3>
+                    <div class="space-y-2">
+                        {personalInfo.languages.map((lang) => (
+                            <div class="p-3 rounded-lg border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">{lang.name}</span>
+                                    <span class="text-sm opacity-70 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full">
+                                        {lang.level}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <!-- Soft Skills -->
+                <div>
+                    <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                        🎯 Soft Skills
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        {personalInfo.softSkills.map((skill) => (
+                            <span class="px-3 py-2 text-sm rounded-lg bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 font-medium">
+                                {skill}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Proyectos -->
+        <div class="slider-slide absolute inset-0 transition-transform duration-500 ease-in-out translate-x-full" data-slide="4">
+            <div class="space-y-4 h-full overflow-y-auto pr-2">
+                {repos.length > 0 ? (
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {repos.slice(0, 20).map((repo) => (
+                            <a
+                                href={repo.html_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="block p-3 rounded-lg border border-black/10 dark:border-white/10
+                                       hover:border-black/20 dark:hover:border-white/20 transition-all duration-200 hover:shadow-lg"
+                            >
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="font-semibold text-sm truncate pr-2">{repo.name}</h3>
+                                    {repo.stargazers_count > 0 && (
+                                        <span class="flex items-center gap-1 text-xs opacity-60 flex-shrink-0">
+                                            ⭐ {repo.stargazers_count}
+                                        </span>
+                                    )}
+                                </div>
+                                <p class="text-sm opacity-70 mb-2 line-clamp-2">
+                                    {repo.description || "Sin descripción"}
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    {repo.language && (
+                                        <span class={`px-2 py-1 text-xs rounded-full ${getLanguageColor(repo.language)} text-white font-medium`}>
+                                            {repo.language}
+                                        </span>
+                                    )}
+                                    <div class="text-xs opacity-50">
+                                        {formatDate(repo.updated_at)}
+                                    </div>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                ) : (
+                    <div class="text-center py-8 opacity-60">
+                        <p>No se pudieron cargar los repositorios</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-document.addEventListener('astro:page-load', () => {
-  const buttons = document.querySelectorAll('.tab-button');
-  const contents = document.querySelectorAll('.tab-content');
+    document.addEventListener("astro:page-load", () => {
+        const navButtons = document.querySelectorAll(".slider-nav");
+        const slides = document.querySelectorAll(".slider-slide");
+        let currentSlide = 0;
 
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const target = button.getAttribute('data-tab');
-      buttons.forEach(btn => btn.setAttribute('data-active','false'));
-      button.setAttribute('data-active','true');
-      contents.forEach(content => {
-        if(content.getAttribute('data-tab')===target){
-          content.classList.remove('hidden');
-        } else {
-          content.classList.add('hidden');
+        function updateSlider() {
+            navButtons.forEach((btn, index) => {
+                btn.setAttribute("data-active", index === currentSlide ? "true" : "false");
+            });
+
+            slides.forEach((slide, index) => {
+                const slideElement = slide as HTMLElement;
+                if (index === currentSlide) {
+                    slideElement.style.transform = "translateX(0)";
+                } else if (index < currentSlide) {
+                    slideElement.style.transform = "translateX(-100%)";
+                } else {
+                    slideElement.style.transform = "translateX(100%)";
+                }
+            });
         }
-      });
+
+        navButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const slideIndex = parseInt(button.getAttribute("data-slide") || "0");
+                currentSlide = slideIndex;
+                updateSlider();
+            });
+        });
+
+        updateSlider();
     });
-  });
-});
 </script>
 
 <style>
-.tab-content { transition: all 0.3s ease; }
+    .slider-container {
+        min-height: 0;
+    }
+
+    .slider-slide {
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .slider-slide::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .slider-slide::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .slider-slide::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .contribution-graph {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .contribution-graph::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .contribution-graph::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .contribution-graph::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+    }
 </style>
